@@ -1,14 +1,9 @@
 # TOTP with a password manager that doesn't support TOTP 😅
 
-> [See it live! 🐿️](https://totp.vercel.app/)
-
 ## Overview
 
-Some password managers, ahem, looking at you Lockwise, ahem, don't
+Some password managers don't
 support [TOTP](https://en.wikipedia.org/wiki/Time-based_One-Time_Password).
-
-Or maybe you don't want to pay $10 per year for Bitwarden. Yes, you have
-my permission to be that frugal. 💸
 
 This usually requires falling back to an authenticator app like Authy or Google
 Authenticator. Unless you like to swim against the current 🌊🏊 and you
@@ -20,18 +15,9 @@ to "hack" your password manager in this way.
 
 ## How does it work?
 
-Directly from the app, you can scan a QR code by using the device
-camera, or upload/drop a screenshot of a QR code if that's more
-convenient for you. If you already have a plaintext TOTP secret, you can
-just paste it in the password field and submit the form.
+Put in a plaintext TOTP secret and in the name field put int a good name for the service and submit the form.
 
-This will trigger what will look to your password manager like a login
-form submission, where only a password was submitted, so it will usually
-prompt you to save the password for that website, including the option
-to add an username.
-
-I suggest putting a meaningful value as the username, to remember what
-service this TOTP secret is for.
+Putting in a meaningful value as the username will be useful for your password vault. this is especially true for when setting up MFA for multiple services using this website. 
 
 At that point, the app will generate a one-time password matching the
 secret that was just added, and copy it to clipboard.

@@ -1,20 +1,12 @@
 /* eslint-env browser */
 
-const QrScanner = require('qr-scanner')
 const totp = require('totp-generator')
-const dragDrop = require('drag-drop')
 
-QrScanner.WORKER_PATH = '/qr-scanner-worker.min.js'
-
-const preview = document.getElementById('preview')
-const previewVideo = preview.querySelector('video')
 const form = document.getElementById('form')
 const formDetails = document.getElementById('form-details')
 const result = document.getElementById('result')
-const error = document.getElementById('error')
 const resultCode = document.getElementById('code')
-const dropzone = document.getElementById('dropzone')
-const { username, password, scanCode, scanImage, showDetails, file, cancel } = form.elements
+const { username, password } = form.elements
 const { secret, algorithm, digits, period, authyMode, resetDefaults } = formDetails.elements
 
 function updatePasswordFromDetails () {
@@ -74,79 +66,12 @@ function generateCode () {
   navigator.clipboard.writeText(code)
 }
 
-function handleTotpUri (uri) {
-  const search = new URLSearchParams(new URL(uri).search)
-
-  username.value = search.get('issuer')
-  password.value = uri
-  updateDetailsFromPassword()
-}
-
-function handleFile (file) {
-  QrScanner.scanImage(file)
-    .then(result => {
-      error.classList.add('is-hidden')
-      handleTotpUri(result)
-    })
-    .catch(err => {
-      console.error(err)
-      result.classList.add('is-hidden')
-      error.classList.remove('is-hidden')
-    })
-}
-
 form.addEventListener('submit', e => {
   e.preventDefault()
   generateCode()
 })
 
-const qrScanner = new QrScanner(previewVideo, result => {
-  scanCode.classList.remove('is-hidden')
-  cancel.classList.add('is-hidden')
-  preview.classList.add('is-hidden')
-  error.classList.add('is-hidden')
-  qrScanner.stop()
-  handleTotpUri(result)
-})
-
-// Force width to avoid pixel shift with rounding.
-scanCode.style.width = `${scanCode.offsetWidth}px`
-
 password.addEventListener('change', updateDetailsFromPassword)
-
-scanCode.addEventListener('click', e => {
-  e.preventDefault()
-  cancel.style.width = `${scanCode.offsetWidth}px`
-  previewVideo.width = form.offsetWidth
-  scanCode.classList.add('is-hidden')
-  cancel.classList.remove('is-hidden')
-  result.classList.add('is-hidden')
-  preview.classList.remove('is-hidden')
-  qrScanner.start()
-})
-
-scanImage.addEventListener('click', e => {
-  e.preventDefault()
-  file.click()
-})
-
-file.addEventListener('change', () => {
-  handleFile(file.files[0])
-})
-
-showDetails.addEventListener('click', e => {
-  e.preventDefault()
-  updateDetailsFromPassword()
-  formDetails.classList.toggle('is-hidden')
-})
-
-cancel.addEventListener('click', e => {
-  e.preventDefault()
-  scanCode.classList.remove('is-hidden')
-  cancel.classList.add('is-hidden')
-  preview.classList.add('is-hidden')
-  qrScanner.stop()
-})
 
 resultCode.addEventListener('click', e => {
   resultCode.select()
@@ -171,22 +96,9 @@ resetDefaults.addEventListener('click', e => {
   updatePasswordFromDetails()
 })
 
-dragDrop('body', {
-  onDrop (files) {
-    handleFile(files[0])
-  },
-  onDragEnter (event) {
-    dropzone.classList.remove('is-hidden')
-  },
-  onDragLeave (event) {
-    dropzone.classList.add('is-hidden')
-  }
-})
-
 addEventListener('paste', e => {
   if (e.clipboardData.items.length <= 0) {
     return
   }
 
-  handleFile(e.clipboardData.items[0].getAsFile())
 })
