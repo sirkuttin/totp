@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "scripts": {
     "build": "make && browserify main.js -o public/main.js",
     "watch": "watchify main.js -o public/main.js",
@@ -6,12 +7,12 @@
   },
   "dependencies": {
     "browserify": "^17.0.0",
-    "bulma": "^0.9.3",
+    "bulma": "^0.9.4",
     "bulma-responsive-form-addons": "^1.0.1",
-    "totp-generator": "^0.0.9"
+    "totp-generator": "1.0.0"
   },
   "devDependencies": {
-    "standard": "^16.0.3",
+    "standard": "^17.1.0",
     "watchify": "^4.0.0"
   }
 }

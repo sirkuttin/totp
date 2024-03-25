@@ -1,6 +1,6 @@
 /* eslint-env browser */
 
-const totp = require('totp-generator')
+import { TOTP } from "totp-generator"
 
 const form = document.getElementById('form')
 const formDetails = document.getElementById('form-details')
@@ -42,7 +42,7 @@ function updateDetailsFromPassword () {
 function totpFromUriOrSecret (value) {
   if (!value.startsWith('otpauth://')) {
     // Directly the secret, use default options.
-    return totp(value)
+    return TOTP.generate(value)
   }
 
   const search = new URLSearchParams(new URL(value).search)
@@ -53,7 +53,7 @@ function totpFromUriOrSecret (value) {
     algorithm = algorithm.replace(/^SHA(\d+)$/i, 'SHA-$1')
   }
 
-  return totp(secret, { algorithm, digits, period })
+  return TOTP.generate(secret, { algorithm, digits, period })
 }
 
 function generateCode () {
